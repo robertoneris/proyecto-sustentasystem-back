@@ -1,6 +1,5 @@
 const { verifySignUp } = require("../middlewares");
 const controller = require("../controllers/auth.controller");
-;
 
 module.exports = function (app) {
   app.use(function (req, res, next) {
@@ -10,13 +9,16 @@ module.exports = function (app) {
     );
     next();
   });
+  app.post("/api/auth/sigcarac", controller.regCarac);
+  app.post("/api/auth/sigresp", controller.regresp);
   app.post(
-    "api/auth/signup",
+    "/api/auth/signup",
     [
-        verifySignUp.checkDuplicateEmail,
-        verifySignUp.checkRolesExisted
+      verifySignUp.checkDuplicateEmail,
+      verifySignUp.checkRolesExisted,
     ],
-    controller.Signup
+    controller.signup
   );
-  app.post("api/auth/signin"),controller.signin;
+
+  app.post("/api/auth/signin", controller.signin);
 };

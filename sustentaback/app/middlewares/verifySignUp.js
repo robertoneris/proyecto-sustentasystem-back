@@ -1,16 +1,19 @@
 const db = require("../models");
 const Client = db.client;
+const ROLES = db.ROLES;
 
 checkDuplicateEmail = (req, res, next) => {
   Client.findOne({
     Correo: req.body.Correo,
-  }).exec((err, Correo) => {
+  }).exec((err, client) => {
     if (err) {
       res.status(500).send({ message: err });
       return;
     }
-    if (Correo) {
+    if (client) {
       res.status(400).send({ message: "Error! el Correo ya esta registrado" });
+      return;
+
     }
     next();
   });
@@ -30,9 +33,9 @@ checkRolesExisted = (req, res, next) => {
   next();
 };
 
-const verifySigUp = {
+const verifySignUp = {
   checkDuplicateEmail,
   checkRolesExisted
 };
 
-module.exports = verifySigUp;
+module.exports = verifySignUp;

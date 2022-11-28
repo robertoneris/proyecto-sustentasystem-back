@@ -1,17 +1,21 @@
-const express = require("express")
+const express = require("express");
 const cors = require("cors");
 const dbConfig = require("./app/config/db.config");
 
 const app = express();
 
 var corsOptions = {
-    origin:"http://localhost:8081"
+  origin: "http://localhost:8081"
 };
+
+
 app.use(cors(corsOptions));
 
+// parse requests of content-type - application/json
 app.use(express.json());
 
-app.use(express.urlencoded({extend:true}));
+// parse requests of content-type - application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true }));
 
 const db = require("./app/models");
 const Role = db.role;
@@ -30,13 +34,16 @@ db.mongoose
     process.exit();
   });
 
-app.get("/",(req,res) => {
-    res.json({message:"sustentaweb backend is  up"})
-});
-require("./app/routes/auth.routes")(app);
-const PORT = process.env.PORT || 8080;
-app.listen(PORT,() =>{
-console.log(`server is running in por ${PORT}.`)
+  app.get("/", (req, res) => {
+    res.json({ message: "sustentaback is up and running" });
+  });
+
+  require("./app/routes/auth.routes")(app);
+
+// set port, listen for requests
+const PORT = process.env.PORT || 8082;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}.`);
 });
 
 function initial(){
