@@ -4,9 +4,11 @@ const Client = db.client;
 const Role = db.role;
 const Carac = db.carac;
 const Resp = db.resp;
-
+const nodemailer = require("nodemailer");
+const { google } = require("googleapis");
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
+const { auth } = require("google-auth-library");
 
 exports.signup = (req, res) => {
   const client = new Client({
@@ -188,4 +190,46 @@ exports.signin = (req, res) => {
         accessToken: token,
       });
     });
+};
+var CLIENT_ID =
+  "591851699847-eh04b1p6vdto8jglsck9cct8ddk415ce.apps.googleusercontent.com";
+var CLIENT_SECRET = "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";
+var REDIRECT_URI = "https://developers.google.com/oauthplayground";
+var REFRESH_TOKEN =
+  "1//04ppjArz1O4ubCgYIARAAGAQSNwF-L9Irz4HlbWj1bHlou1u4eRL0zj81VrowK5k5zX9Q2nv7OMyurpmZba6k3HAIUYH7VYBp6_M";
+var oAuth2Client = new google.auth.OAuth2(
+  CLIENT_ID,
+  CLIENT_SECRET,
+  REDIRECT_URI
+);
+oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+exports.sendmail = (req, res) => {
+  const accessToken = oAuth2Client.getAccessToken();
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      type: "OAuth2",
+      user: "rnerisn2@gmail.com",
+      clientId: CLIENT_ID,
+      clientSecret: CLIENT_SECRET,
+      refreshToken: REFRESH_TOKEN,
+      accessToken: accessToken,
+    },
+  });
+  const mailOptions = {
+    from: "roberto <rnerisn2@gmail.com>",
+    to: "jorge.inc.gt@gmail.com",
+    subject: "prueba de nodemailer",
+    text: req.body.mensaje,
+    
+  };
+  transporter.sendMail(mailOptions, (err, info) => {
+    if (err) {
+      console.log(err)
+      res.status(500).send(err.message);
+    } else {
+      console.log("Email enviado");
+      res.status(200).send("datos enviado correctamente");
+    }
+  });
 };
