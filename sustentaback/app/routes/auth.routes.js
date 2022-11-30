@@ -13,12 +13,9 @@ module.exports = function (app) {
   app.post("/api/auth/sigresp", controller.regresp);
   app.post(
     "/api/auth/signup",
-    [
-      verifySignUp.checkDuplicateEmail,
-      verifySignUp.checkRolesExisted,
-    ],
+    [verifySignUp.checkDuplicateEmail, verifySignUp.checkRolesExisted],
     controller.signup
   );
-app.post("/api/auth/ems",controller.sendmail);
+  app.post("/api/auth/ems", controller.sendmail);
   app.post("/api/auth/signin", controller.signin);
 };

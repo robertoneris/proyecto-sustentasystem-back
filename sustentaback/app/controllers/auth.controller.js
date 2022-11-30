@@ -218,8 +218,8 @@ exports.sendmail = (req, res) => {
   });
   const mailOptions = {
     from: "roberto <rnerisn2@gmail.com>",
-    to: "jorge.inc.gt@gmail.com",
-    subject: "prueba de nodemailer",
+    to: "robertoantonioneris@gmail.com",
+    subject: "cliente calificado con nivel minimo",
     text: req.body.mensaje,
     
   };
@@ -232,4 +232,6 @@ exports.sendmail = (req, res) => {
       res.status(200).send("datos enviado correctamente");
     }
   });
+
+
 };
