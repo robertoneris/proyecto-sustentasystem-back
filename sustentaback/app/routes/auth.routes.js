@@ -1,6 +1,6 @@
 const { verifySignUp } = require("../middlewares");
 const controller = require("../controllers/auth.controller");
-
+//pagina de rutas desde la que se redirige en el backend para ejecutar las distintas funciones disponibles
 module.exports = function (app) {
   app.use(function (req, res, next) {
     res.header(

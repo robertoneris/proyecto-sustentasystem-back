@@ -9,8 +9,21 @@ const { google } = require("googleapis");
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 const { auth } = require("google-auth-library");
-
+/*pagina de funciones que se exportan como web metodos para el frontend */
+//variables utilizadas para el envio de correos, es importante cambiar los datos por los datos a utilizar en por la empresa ya que estos se deshabilitaran para seguridad de la empresa
+var CLIENT_ID =
+  "591851699847-eh04b1p6vdto8jglsck9cct8ddk415ce.apps.googleusercontent.com";
+var CLIENT_SECRET = "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";
+var REDIRECT_URI = "https://developers.google.com/oauthplayground";
+var REFRESH_TOKEN =
+  "1//04ppjArz1O4ubCgYIARAAGAQSNwF-L9Irz4HlbWj1bHlou1u4eRL0zj81VrowK5k5zX9Q2nv7OMyurpmZba6k3HAIUYH7VYBp6_M";
+var oAuth2Client = new google.auth.OAuth2(
+  CLIENT_ID,
+  CLIENT_SECRET,
+  REDIRECT_URI
+);
 exports.signup = (req, res) => {
+  //funcion de registro que verifica disponibilidad de correo y de rol a a asignar  para registrar en la tabla mongodb de usuario
   const client = new Client({
     Nombre: req.body.Nombre,
     Correo: req.body.Correo,
@@ -65,6 +78,7 @@ exports.signup = (req, res) => {
   });
 };
 exports.regCarac = (req, res) => {
+  //funcion de registro de caraacteristicas en la base de mongo, el id que esta ingresado  se asocia con el id de usuario
   const carac = new Carac({
     Apellido: req.body.Apellido,
     NombreOrganizacion: req.body.NombreOrganizacion,
@@ -116,6 +130,7 @@ exports.regCarac = (req, res) => {
   });
 };
 exports.regresp = (req, res) => {
+  //funcion de registro de respuestas de la encuesta inicial en la base de mongo, el id que esta ingresado  se asocia con el id de usuario
   const resp = new Resp({
     resp1: req.body.resp1,
     resp2: req.body.resp2,
@@ -153,6 +168,7 @@ exports.regresp = (req, res) => {
   });
 };
 exports.signin = (req, res) => {
+  //funcion de inicio de sesion, se busca si existe el correo y luego se comprueba la contraseña encriptada con bcrypt
   Client.findOne({
     Correo: req.body.Correo,
   })
@@ -191,24 +207,16 @@ exports.signin = (req, res) => {
       });
     });
 };
-var CLIENT_ID =
-  "591851699847-eh04b1p6vdto8jglsck9cct8ddk415ce.apps.googleusercontent.com";
-var CLIENT_SECRET = "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";
-var REDIRECT_URI = "https://developers.google.com/oauthplayground";
-var REFRESH_TOKEN =
-  "1//04ppjArz1O4ubCgYIARAAGAQSNwF-L9Irz4HlbWj1bHlou1u4eRL0zj81VrowK5k5zX9Q2nv7OMyurpmZba6k3HAIUYH7VYBp6_M";
-var oAuth2Client = new google.auth.OAuth2(
-  CLIENT_ID,
-  CLIENT_SECRET,
-  REDIRECT_URI
-);
+
 oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 exports.sendmail = (req, res) => {
+  //funcion encargada de enviar el correos a kairos
   const accessToken = oAuth2Client.getAccessToken();
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
       type: "OAuth2",
+      //importante cambiar este dato por seguridad de la empresa
       user: "rnerisn2@gmail.com",
       clientId: CLIENT_ID,
       clientSecret: CLIENT_SECRET,
@@ -217,21 +225,19 @@ exports.sendmail = (req, res) => {
     },
   });
   const mailOptions = {
-    from: "roberto <rnerisn2@gmail.com>",
+    //importante cambiar estos datos por seguridad de la empresa
+    from: "Kairos <rnerisn2@gmail.com>",
     to: "robertoantonioneris@gmail.com",
     subject: "cliente calificado con nivel minimo",
     text: req.body.mensaje,
-    
   };
   transporter.sendMail(mailOptions, (err, info) => {
     if (err) {
-      console.log(err)
+      console.log(err);
       res.status(500).send(err.message);
     } else {
       console.log("Email enviado");
       res.status(200).send("datos enviado correctamente");
     }
   });
-
-
 };

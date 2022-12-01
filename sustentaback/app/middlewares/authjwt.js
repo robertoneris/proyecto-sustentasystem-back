@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const config = require("../config/auth.config.js");
 const db = require("../models");
 const Client = db.client;
-
+//funciones de autorizacion de funciones solicitadas desde el frontend
 verifyToken = (req, res, next) => {
   let token = req.headers["x-access-token"];
   if (!token) {
@@ -17,6 +17,7 @@ verifyToken = (req, res, next) => {
   });
 };
 isAdmin = (req, res, next) => {
+  //funcion que comprueba si el usuario posee el rol de admin
   User.findById(req.userId).exec((err, user) => {
     if (err) {
       res.status(500).send({ message: err });

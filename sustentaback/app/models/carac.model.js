@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Decimal128 = require("mongoose/lib/schema/decimal128");
-
+//modelo de las caracteristias del usuario en moongoose para ingresarlas en mongoDB
 const Carac = mongoose.model(
   "Caracteristicas",
   new mongoose.Schema({
